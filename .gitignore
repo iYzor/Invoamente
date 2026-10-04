@@ -1,0 +1,4 @@
+# Credenciais dos acessos fictícios gerados localmente.
+acessos-ficticios-*.csv
+__pycache__/
+.test-tools/
