@@ -1,4 +1,4 @@
-# Ateliê Gestão
+# InovaMente
 
 Sistema acadêmico de gestão de salão com HTML5, CSS, JavaScript modular, Bootstrap 5 e Supabase. As páginas usam dados reais; não incluem dados fictícios nem um backend local.
 
