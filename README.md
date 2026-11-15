@@ -6,7 +6,7 @@ Sistema acadêmico de gestão de salão com HTML5, CSS, JavaScript modular, Boot
 
 1. Preencha `js/config.js` com a URL do projeto e sua chave pública anon/publishable. Nunca use a chave service_role.
 2. Com as nove tabelas e as duas triggers do enunciado existentes, execute `supabase/setup.sql` no SQL Editor. O script aplica permissões, RLS e RPCs transacionais. Execute uma vez; as políticas e a tabela auxiliar não são recriáveis sem remoção prévia. Revise políticas antigas: políticas permissivas podem ampliar acesso.
-3. Crie usuários pelo painel Auth do Supabase. A trigger existente cria os perfis. Pelo SQL Editor, atribua `role = 'admin'` ao administrador e `role = 'profissional'` às profissionais; defina `full_name` e `commission_rate` de 0 a 100 (30 representa 30%). Não existe cadastro público nem alteração de papel pelo navegador.
+3. Crie usuários na tela Usuários com uma conta administradora. Para habilitar a criação, publique a função segura: `supabase functions deploy create-user` (após `supabase login` e `supabase link --project-ref SEU_PROJECT_REF`). A função valida o papel de administrador no servidor e cria profissionais com e-mail confirmado; nunca coloque service_role no navegador. A criação inicial do administrador continua sendo feita pelo painel Auth do Supabase; em seguida, execute `supabase/set-admin.sql` no SQL Editor.
 4. Na pasta do projeto execute `python -m http.server 8000` e abra `http://localhost:8000/login.html`. Módulos ES precisam de HTTP; não abra via `file://`. É necessário acesso à internet para os CDNs e Supabase.
 
 ## Comportamento

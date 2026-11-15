@@ -2,3 +2,4 @@
 acessos-ficticios-*.csv
 __pycache__/
 .test-tools/
+node_modules/
