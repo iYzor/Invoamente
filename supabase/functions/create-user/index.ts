@@ -29,15 +29,17 @@ Deno.serve(async (request) => {
   if (profileError) return respond({ error: 'Não foi possível validar a permissão administrativa.' }, 500)
   if (profile?.role !== 'admin') return respond({ error: 'Somente administradores podem criar usuários.' }, 403)
 
-  let input: { full_name?: string; email?: string; password?: string; commission_rate?: number }
+  let input: { full_name?: string; email?: string; password?: string; commission_rate?: number; role?: string }
   try { input = await request.json() } catch { return respond({ error: 'Dados inválidos.' }, 400) }
   const fullName = input.full_name?.trim()
   const email = input.email?.trim().toLowerCase()
   const password = input.password
-  const rate = Number(input.commission_rate)
+  const role = input.role ?? 'profissional'
+  const rate = role === 'profissional' ? Number(input.commission_rate ?? 0) : 0
   if (!fullName || fullName.length > 150 || !email || !/^\S+@\S+\.\S+$/.test(email)
-      || !password || password.length < 8 || !Number.isFinite(rate) || rate < 0 || rate > 100) {
-    return respond({ error: 'Confira nome, e-mail, senha (mínimo 8 caracteres) e comissão (0 a 100%).' }, 400)
+      || !password || password.length < 8 || !['admin', 'profissional'].includes(role)
+      || !Number.isFinite(rate) || rate < 0 || rate > 100) {
+    return respond({ error: 'Confira nome, e-mail, senha (mínimo 8 caracteres), tipo de acesso e comissão (0 a 100%).' }, 400)
   }
 
   const { data, error } = await adminClient.auth.admin.createUser({
@@ -45,7 +47,7 @@ Deno.serve(async (request) => {
   })
   if (error) return respond({ error: error.message }, 400)
   const { error: saveError } = await adminClient.from('profiles').upsert({
-    id: data.user.id, full_name: fullName, role: 'profissional', commission_rate: rate,
+    id: data.user.id, full_name: fullName, role, commission_rate: rate,
   }, { onConflict: 'id' })
   if (saveError) {
     await adminClient.auth.admin.deleteUser(data.user.id)
